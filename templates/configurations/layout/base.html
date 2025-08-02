@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}xhtmx06{% endblock %}</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    {% if user.is_authenticated %}
+    <header>
+        <nav class="container">
+            <div class="nav-brand">
+                <h1><a href="{% url 'accueil' %}">xhtmx06</a></h1>
+            </div>
+            <div class="nav-menu">
+                <a href="{% url 'accueil' %}" class="nav-link">Accueil</a>
+                <a href="{% url 'htmx_example' %}" class="nav-link">HTMX Demo</a>
+                {% if user.is_staff %}
+                    <a href="{% url 'admin:index' %}" class="nav-link">Admin</a>
+                {% endif %}
+                <div class="nav-user">
+                    <span class="user-name">{{ user.get_full_name|default:user.username }}</span>
+                    <a href="{% url 'deconnexion' %}" class="nav-link logout">Déconnexion</a>
+                </div>
+            </div>
+        </nav>
+    </header>
+    {% endif %}
+
+    <main class="container">
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        {% block content %}
+        {% endblock %}
+    </main>
+
+    {% if user.is_authenticated %}
+    <footer class="container">
+        <p>&copy; 2025 Propulsé par Django et HTMX.</p>
+    </footer>
+    {% endif %}
+
+    <button class="theme-toggle no-print" onclick="toggleTheme()" title="Changer le thème">
+        🌓
+    </button>
+
+    <script src="{% static 'js/htmx.min.js' %}"></script>
+    <script>
+     // Gestion du thème
+     function toggleTheme() {
+       const currentTheme = document.documentElement.getAttribute('data-theme');
+       const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+       
+       document.documentElement.setAttribute('data-theme', newTheme);
+       localStorage.setItem('theme', newTheme);
+       
+       // Animation du bouton
+       const button = document.querySelector('.theme-toggle');
+       button.style.transform = 'scale(0.8) rotate(180deg)';
+       setTimeout(() => {
+         button.style.transform = 'scale(1) rotate(0deg)';
+       }, 200);
+     }
+
+     // Charger le thème sauvegardé
+     document.addEventListener('DOMContentLoaded', function() {
+       const savedTheme = localStorage.getItem('theme');
+       if (savedTheme) {
+         document.documentElement.setAttribute('data-theme', savedTheme);
+       }
+
+       // Animation des cartes au hover
+       const cards = document.querySelectorAll('.dashboard-card, .demo-section');
+       cards.forEach(card => {
+         card.addEventListener('mouseenter', function() {
+           this.style.transform = 'translateY(-5px) scale(1.02)';
+         });
+         
+         card.addEventListener('mouseleave', function() {
+           this.style.transform = 'translateY(0) scale(1)';
+         });
+       });
+     });
+
+     // Amélioration HTMX avec animations
+     document.addEventListener('htmx:beforeSwap', function(evt) {
+       evt.target.style.opacity = '0.5';
+       evt.target.style.transform = 'scale(0.98)';
+     });
+
+     document.addEventListener('htmx:afterSwap', function(evt) {
+       evt.target.style.opacity = '1';
+       evt.target.style.transform = 'scale(1)';
+       evt.target.classList.add('bounce-in');
+     });
+
+     // Gestion des erreurs de formulaire avec animation
+     document.addEventListener('htmx:responseError', function(evt) {
+       const target = evt.target;
+       target.classList.add('shake');
+       setTimeout(() => target.classList.remove('shake'), 500);
+     });
+    </script>
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

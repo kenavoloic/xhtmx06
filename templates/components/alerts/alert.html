@@ -1,0 +1,16 @@
+{% load crispy_forms_tags %}
+
+<div class="alert alert-{{ type|default:'info' }} {% if dismissible %}alert-dismissible{% endif %}" role="alert">
+    {% if icon %}
+        <span class="alert-icon">{{ icon }}</span>
+    {% endif %}
+    <div class="alert-content">
+        {% if title %}
+            <h5 class="alert-title">{{ title }}</h5>
+        {% endif %}
+        {{ message }}
+    </div>
+    {% if dismissible %}
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">×</button>
+    {% endif %}
+</div>

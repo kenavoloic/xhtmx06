@@ -1,0 +1,31 @@
+{% load crispy_forms_tags %}
+
+<div class="form-container">
+    {% if form_title %}
+        <h3 class="form-title">{{ form_title }}</h3>
+    {% endif %}
+    
+    <form method="{{ method|default:'post' }}" 
+          {% if hx_post %}hx-post="{{ hx_post }}"{% endif %}
+          {% if hx_target %}hx-target="{{ hx_target }}"{% endif %}
+          {% if form_class %}class="{{ form_class }}"{% endif %}>
+        
+        {% csrf_token %}
+        
+        {% if form.non_field_errors %}
+            {% include 'components/alerts/alert.html' with type='danger' message=form.non_field_errors.0 dismissible=True %}
+        {% endif %}
+        
+        {{ form|crispy }}
+        
+        <div class="form-actions">
+            {% if show_cancel %}
+                <a href="{{ cancel_url }}" class="btn btn-secondary">{{ cancel_text|default:"Annuler" }}</a>
+            {% endif %}
+            <button type="submit" class="btn btn-primary">
+                {{ submit_text|default:"Envoyer" }}
+              <span class="htmx-indicator">⏳</span>
+            </button>
+        </div>
+    </form>
+</div>

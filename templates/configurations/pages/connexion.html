@@ -1,0 +1,31 @@
+{% extends 'configurations/layout/base.html' %}
+
+{% block title %}Connexion - {{ block.super }}{% endblock %}
+
+{% block content %}
+<div class="login-container">
+  <div class="login-card">
+    <h1>Connexion</h1>
+    <p>Veuillez vous connecter pour accéder à l'application</p>
+    
+    {% if form.errors %}
+    <div class="alert alert-danger">
+      <p>Nom d'utilisateur ou mot de passe incorrect.</p>
+    </div>
+    {% endif %}
+    
+    <form method="post">
+      {% csrf_token %}
+      <div class="form-group">
+        <label for="{{ form.username.id_for_label }}">{{ form.username.label }}</label>
+        {{ form.username }}
+      </div>
+      <div class="form-group">
+        <label for="{{ form.password.id_for_label }}">{{ form.password.label }}</label>
+        {{ form.password }}
+      </div>
+      <button type="submit" class="btn btn-primary btn-block">Se connecter</button>
+    </form>
+  </div>
+</div>
+{% endblock %}

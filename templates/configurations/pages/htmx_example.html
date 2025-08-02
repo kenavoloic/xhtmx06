@@ -1,0 +1,42 @@
+{% extends 'configurations/layout/base.html' %}
+
+{% block title %}Exemple HTMX - {{ block.super }}{% endblock %}
+
+{% block content %}
+<div class="htmx-demo">
+  <h1>Démonstration HTMX</h1>
+  
+  <div class="demo-section">
+    <h2>Test de chargement de contenu</h2>
+    <button hx-get="{% url 'htmx_example' %}" 
+            hx-target="#htmx-content"
+            class="btn btn-primary">
+      Charger du contenu avec HTMX
+      <span class="htmx-indicator">⏳</span>
+    </button>
+    
+    <div id="htmx-content" style="margin-top: 1rem;">
+      <p>Cliquez sur le bouton pour voir HTMX en action!</p>
+    </div>
+  </div>
+
+  <div class="demo-section">
+    <h2>Formulaire HTMX</h2>
+    <form hx-post="{% url 'htmx_form' %}" 
+          hx-target="#form-result"
+          hx-swap="innerHTML">
+      {% csrf_token %}
+      <div class="form-group">
+        <label for="name">Nom :</label>
+        <input type="text" name="name" id="name" class="form-control" required>
+      </div>
+      <button type="submit" class="btn btn-primary">
+        Envoyer
+        <span class="htmx-indicator">⏳</span>
+      </button>
+    </form>
+    
+    <div id="form-result" style="margin-top: 1rem;"></div>
+  </div>
+</div>
+{% endblock %}
