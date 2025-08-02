@@ -1,56 +1,63 @@
 <!DOCTYPE html>
 <html lang="fr">
-<head>
+  <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}xhtmx06{% endblock %}</title>
     {% load static %}
-    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
     {% block extra_css %}{% endblock %}
-</head>
-<body>
+  </head>
+  <body>
     {% if user.is_authenticated %}
     <header>
-        <nav class="container">
-            <div class="nav-brand">
-                <h1><a href="{% url 'accueil' %}">xhtmx06</a></h1>
-            </div>
-            <div class="nav-menu">
-                <a href="{% url 'accueil' %}" class="nav-link">Accueil</a>
-                <a href="{% url 'htmx_example' %}" class="nav-link">HTMX Demo</a>
-                {% if user.is_staff %}
-                    <a href="{% url 'admin:index' %}" class="nav-link">Admin</a>
-                {% endif %}
-                <div class="nav-user">
-                    <span class="user-name">{{ user.get_full_name|default:user.username }}</span>
-                    <a href="{% url 'deconnexion' %}" class="nav-link logout">Déconnexion</a>
-                </div>
-            </div>
-        </nav>
+      <nav class="container">
+        <div class="nav-brand">
+          <h1><a href="{% url 'accueil' %}">xhtmx06</a></h1>
+        </div>
+        <div class="nav-menu">
+          <a href="{% url 'accueil' %}" class="nav-link">Accueil</a>
+          <a href="{% url 'htmx_example' %}" class="nav-link">HTMX Demo</a>
+          {% if user.is_staff %}
+          <a href="{% url 'admin:index' %}" class="nav-link">Admin</a>
+          {% endif %}
+          <div class="nav-user">
+	    <span class="user-name">{{ user.get_full_name|default:user.username }}</span>
+	    <form method="post" action="{% url 'deconnexion' %}" style="display: inline;">
+              {% csrf_token %}
+	      <button type="submit" class="nav-link logout" style="background: none; border: none; font-family: inherit; font-size: inherit;">
+		Déconnexion
+	      </button>
+	    </form>
+          </div>
+        </div>
+      </nav>
     </header>
     {% endif %}
 
     <main class="container">
-        {% if messages %}
-            {% for message in messages %}
-                <div class="alert alert-{{ message.tags }}">
-                    {{ message }}
-                </div>
-            {% endfor %}
-        {% endif %}
+      {% if messages %}
+      {% for message in messages %}
+      <div class="alert alert-{{ message.tags }}">
+        {{ message }}
+      </div>
+      {% endfor %}
+      {% endif %}
 
-        {% block content %}
-        {% endblock %}
+      {% block content %}
+      {% endblock %}
     </main>
 
     {% if user.is_authenticated %}
     <footer class="container">
-        <p>&copy; 2025 Propulsé par Django et HTMX.</p>
+      {% comment %}<p>&copy; 2025 Propulsé par Django et HTMX.</p>{% endcomment %}
+      {% now "l j F Y" as date_courante%}
+      {{ date_courante | capfirst }}
     </footer>
     {% endif %}
 
     <button class="theme-toggle no-print" onclick="toggleTheme()" title="Changer le thème">
-        🌓
+      🌓
     </button>
 
     <script src="{% static 'js/htmx.min.js' %}"></script>
@@ -111,5 +118,5 @@
      });
     </script>
     {% block extra_js %}{% endblock %}
-</body>
+  </body>
 </html>
